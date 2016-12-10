@@ -1,3 +1,4 @@
+$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require "resquire"
 require "colorize"
 require "trollop"
@@ -7,20 +8,26 @@ foo = ARGV[0] || ARGV[0] = '-h'
 
 opts = Trollop::options do
   banner Resquire::BANNER
-  opt :gems,     'gems to find redudancies from',                       :type    => :strings
-  opt :banner,   'use resquire banner or not',                          :default => true
-  opt :shuffle,  'use the shuffle algorithm',                           :default => true
-  opt :progress, 'use progress indicator, useful for large gem groups', :default => false
-  opt :iterate,  'use the iterate algorithm',                           :default => false
-  opt :color,    'color output or not',                                 :default => true
-  opt :diff,     'show diff of optimized / redundant gems',             :default => true
-  opt :rainbows, 'rainbow option, because we need it',                  :default => false
+  opt :gems,         'gems to find redudancies from',                       :type    => :strings, :required => true
+  opt :banner,       'use resquire banner or not',                          :default => true
+  opt :shuffle,      'use the shuffle algorithm',                           :default => true
+  opt :progress,     'use progress indicator, useful for large gem groups', :default => false
+  opt :Permutations, 'show permutations and exit from given gems',          :default => false
+  opt :iterate,      'use the iterate algorithm',                           :default => false
+  opt :color,        'color output or not',                                 :default => true
+  opt :diff,         'show diff of optimized / redundant gems',             :default => true
 end
 
-# rainbow hook
-require 'lolize/auto' if opts[:rainbows]
-
 analyzer = Resquire::Analyzer.new(:gems => opts[:gems])
+
+if opts[:Permutations]
+  if [:color]
+    puts "Permutations: ".bold + "#{analyzer.permutations}"
+  else
+    puts "Permutations: #{analyzer.permutations}"
+  end
+  exit 0
+end
 
 redundant = analyzer.redundant_gems(:shuffle => opts[:shuffle], :iterate => opts[:iterate],:progress_bar => opts[:progress]) 
 
