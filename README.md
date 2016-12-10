@@ -30,6 +30,11 @@ analyzer.add_gems(['ipaddr', 'socket', 'thread'])
 analyzer.gems
 # => ["colorize", "packetfu", "lolize", "pcaprub", "ipaddr", "socket", "thread"]
 
+# quickly check ammount of permutations ( to see wtf we're about to get outselves into )
+# no, srsly, like, you can easily have 20 gems; and that's 2,432,902,008,176,640,000 permutations dog, fo real 
+analyzer.permutations
+# => 5040
+
 # then you can find out if there are any redundant gems to be found 
 analyzer.redundant_gems?
 # => true

@@ -28,6 +28,10 @@ module Resquire
       @gems = @gems.uniq
       true
     end
+    
+    def permutations
+      (1..@gems.count).reduce(:*) || 1
+    end
 
     def redundant_gems
       find_redundant_gems.empty? ? false : @redundant_gems
