@@ -1,0 +1,61 @@
+require "resquire"
+require "colorize"
+require "trollop"
+
+# default help menu
+foo = ARGV[0] || ARGV[0] = '-h'
+
+opts = Trollop::options do
+  banner Resquire::BANNER
+  opt :gems,     'gems to find redudancies from',                       :type    => :strings
+  opt :banner,   'use resquire banner or not',                          :default => true
+  opt :shuffle,  'use the shuffle algorithm',                           :default => true
+  opt :progress, 'use progress indicator, useful for large gem groups', :default => false
+  opt :iterate,  'use the iterate algorithm',                           :default => false
+  opt :color,    'color output or not',                                 :default => true
+  opt :diff,     'show diff of optimized / redundant gems',             :default => true
+  opt :rainbows, 'rainbow option, because we need it',                  :default => false
+end
+
+# rainbow hook
+require 'lolize/auto' if opts[:rainbows]
+
+analyzer = Resquire::Analyzer.new(:gems => opts[:gems])
+
+redundant = analyzer.redundant_gems(:shuffle => opts[:shuffle], :iterate => opts[:iterate],:progress_bar => opts[:progress]) 
+
+optimized = analyzer.optimized_gems
+
+if redundant == false
+  if opts[:color]
+    puts "No redundant gems found!".red
+  else
+    puts "No redundant gems found!"
+  end
+  exit 1
+end
+
+if opts[:diff]
+  if opts[:color]
+    puts 'Redundant:'.bold
+    redundant.each { |gem| puts gem.red }
+    puts '----------------------------'
+    puts 'Optimized:'.bold
+    optimized.each { |gem| puts gem.green }
+  else
+    puts 'Redundant:'
+    redundant.each { |gem| puts gem }
+    puts '----------------------------'
+    puts 'Optimizied:'
+    optimized.each { |gem| puts gem }
+  end
+else
+  if opts[:color]
+    optimized.each { |gem| puts gem.green }
+  else
+    optimized.each { |gem| puts gem }
+  end
+end
+
+exit 0
+

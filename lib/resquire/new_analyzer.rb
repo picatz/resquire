@@ -56,8 +56,11 @@ module Resquire
       @count = 0
       # shuffle method by default
       shuffle = args[:shuffle] || true
+      iterate = args[:iterate] || false
       if shuffle
         shuffle_permutations(args)   
+      elsif iterate
+        shuffle_permutations(args) 
       else
         iterate_permutations(args)
       end 
