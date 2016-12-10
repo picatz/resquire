@@ -43,11 +43,13 @@ analyzer.redundant_gems
 # you can choose not to shuffle the permutated array, may be better for larger gem groups
 # since we're not pre-generating the permutations -- we're simply looping through the
 # possibilities via an enumerator.
+# true by default, since I find it to be generally nicer
 analyzer.redundant_gems(:shuffle => false) 
 # => ["pcaprub", "ipaddr", "socket", "thread"]
 
 # you can also choose to to display a small progresss indicator or not
-analyzer.redundant_gems(:progress_bar => false)  
+# true by default, since I find it to be generally faster
+analyzer.redundant_gems(:progress_bar => false) 
 # => ["pcaprub", "ipaddr", "socket", "thread"]
 
 # or the new optimized gem listing as an array with the redundancies
