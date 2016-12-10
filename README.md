@@ -46,9 +46,12 @@ analyzer.redundant_gems
 analyzer.redundant_gems(:shuffle => false) 
 # => ["pcaprub", "ipaddr", "socket", "thread"]
 
-# you can also choose to 
+# you can also choose to to display a small progresss indicator or not
+analyzer.redundant_gems(:progress_bar => false)  
+# => ["pcaprub", "ipaddr", "socket", "thread"]
 
 # or the new optimized gem listing as an array with the redundancies
+# these would be the gems you'd want to require in your application now
 analyzer.optimized_gems
 # => ["colorize", "lolize", "packetfu"]
 ```
