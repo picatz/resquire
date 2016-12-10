@@ -12,10 +12,6 @@ analyzer.add_gem('pcaprub')
 analyzer.add_gems(['ipaddr', 'socket', 'thread'])
 # => true
 
-# then you can find our if there are any redundant gems
-analyzer.redundant_gems?
-# => true
-
 # you can get an array of the redundant gems
 analyzer.redundant_gems
 # => ["pcaprub", "ipaddr", "socket", "thread"]
@@ -24,3 +20,4 @@ analyzer.redundant_gems
 analyzer.optimized_gems
 # => ["colorize", "lolize", "packetfu"]
 
+puts analyzer.optimized_gems

@@ -32,16 +32,21 @@ analyzer.gems
 
 # quickly check ammount of permutations ( to see wtf we're about to get outselves into )
 # no, srsly, like, you can easily have 20 gems; and that's 2,432,902,008,176,640,000 permutations dog, fo real 
+# you can try splitting them up into smaller batches of roughly ~13
 analyzer.permutations
 # => 5040
-
-# then you can find out if there are any redundant gems to be found 
-analyzer.redundant_gems?
-# => true
 
 # you can get an array of the redundant gems
 analyzer.redundant_gems
 # => ["pcaprub", "ipaddr", "socket", "thread"]
+
+# you can choose not to shuffle the permutated array, may be better for larger gem groups
+# since we're not pre-generating the permutations -- we're simply looping through the
+# possibilities via an enumerator.
+analyzer.redundant_gems(:shuffle => false) 
+# => ["pcaprub", "ipaddr", "socket", "thread"]
+
+# you can also choose to 
 
 # or the new optimized gem listing as an array with the redundancies
 analyzer.optimized_gems

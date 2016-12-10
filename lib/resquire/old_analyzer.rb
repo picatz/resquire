@@ -28,13 +28,22 @@ module Resquire
       @gems = @gems.uniq
       true
     end
-
-    def permutations
-      (1..@gems.count).reduce(:*) || 1
+    
+    def permutations(gems = @gems)
+      (1..gems.count).reduce(:*) || 1
     end
 
-    def redundant_gems
+    def redundant_gems(args={})
+      @count = 0
+      @permutation_count = permutations
+      @progress_bar = args[:progress_bar] || true
+      gems = args[:gems] || @gems
+      redundant = args[:redundant_gems] || @redundant_gems
       find_redundant_gems.empty? ? false : @redundant_gems
+    end
+
+    def redundant_gems?
+      find_redundant_gems(:question => true).empty? ? false : true
     end
 
     def optimized_gems
@@ -45,30 +54,6 @@ module Resquire
     private
 
     def find_redundant_gems(args={})
-      gems = args[:gems] || @gems
-      question = args[:question] || false 
-      gems_with_deps = {}
-      gems.each do |gem|
-        output, status = Open3.capture2e("gem dependency #{gem}")
-        if status.success?
-          deps = output.split("\n").map(&:strip)
-          deps = deps.reject { |g| g.include? ", development" or g.include? "Gem " }
-          deps = deps.map { |x| x.gsub(/\s\(.+\)/,'') }
-          gems_with_deps[gem] = deps
-        end
-      end
-      redundant_gems = []
-      gems_with_deps.keys.each do |gem|
-        next if gems_with_deps[gem].empty?
-        gems_with_deps[gem].each do |g|
-          redundant_gems << g if gems_with_deps.keys.include?(g)
-        end 
-      end
-      redundant_gems.uniq.each { |gem| @redundant_gems << gem unless @redundant_gems.include?(gem) }
-      @redundant_gems
-    end
-
-    def find_redundant_gems_with_gem(args={})
       gems = @gems.reject { |gem| @redundant_gems.include? gem }
       question = args[:question] || false 
       permutation_count = permutations(gems)
@@ -89,9 +74,6 @@ module Resquire
       find_redundant_gems unless count == permutation_count
       @redundant_gems
     end
-
-
-
 
   end
 
