@@ -152,7 +152,7 @@ module Resquire
       gems = gems.permutation.to_a.shuffle
       gems.each do |gem_group|
         print "#{count}/#{permutation_count}\r" if @progress_bar
-        redundant_gem, status = Open3.capture2e("ruby lib/template.rb #{gem_group.join(',')}")
+        redundant_gem, status = Open3.capture2e("ruby ../../lib/template.rb #{gem_group.join(',')}")
         @redundant_gems << redundant_gem unless status.success?
         break unless status.success?
         count += 1
@@ -168,7 +168,7 @@ module Resquire
       count = 0
       gems.permutation.each do |gem_group|
         print "#{count}/#{permutation_count}\r" if @progress_bar
-        redundant_gem, status = Open3.capture2e("ruby lib/template.rb #{gem_group.join(',')}")
+        redundant_gem, status = Open3.capture2e("ruby ../../lib/template.rb #{gem_group.join(',')}")
         @redundant_gems << redundant_gem unless status.success?
         break unless status.success?
         count += 1
