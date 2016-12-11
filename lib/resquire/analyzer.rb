@@ -3,8 +3,15 @@ module Resquire
   class Analyzer
     # gem dependencies, as an array
     attr_reader :gems
-    attr_reader :redundant_gems
 
+    # When we create a new Analyzer, we can specifiy the
+    # gems we want to work with, but it must be passed
+    # in as an array in the args hash.
+    #
+    # == Typical Usage
+    #
+    #  analyzer = Resquire::Analyzer.new(:gems => ['packetfu', 'pcaprub'])
+    #
     def initialize(args = {})
       @gems = []
       @redundant_gems = []
@@ -18,21 +25,55 @@ module Resquire
       true
     end
 
+    # We can add gems specified from an array.
+    #
+    # == Typical Usage
+    #
+    #  analyzer = Resquire::Analyzer.new
+    #  analyzer.add_gems(['packetfu', 'pcaprub'])
+    #
     def add_gems(gems = [])
       gems.uniq.each { |gem| @gems << gem } 
       true
     end
 
+    # We can add one gem at a time as a string.
+    #
+    # == Typical Usage
+    #
+    #  analyzer = Resquire::Analyzer.new
+    #  analyzer.add_gem('packetfu')
+    #  analyzer.add_gem('pcaprub')
+    #
     def add_gem(gem)
       @gems << gem
       @gems = @gems.uniq
       true
     end
 
+    # We can check the given permutations that
+    # we will need to cycle through to find gems
+    # that are redundant.
+    #
+    # == Typical Usage
+    #
+    #  analyzer = Resquire::Analyzer.new(:gems => ['packetfu', 'pcaprub'])
+    #  analyzer.permutations
+    #   
     def permutations(gems = @gems)
       (1..gems.count).reduce(:*) || 1
     end
 
+    # We can find the redundant gems from the the analyzer has
+    # to work with, iterating over the possible permutations and returning
+    # an array of redundant gems.
+    #
+    # == Typical Usage
+    #
+    #  analyzer = Resquire::Analyzer.new(:gems => ['packetfu', 'pcaprub'])
+    #  analyzer.permutations
+    #  # => 2
+    #   
     def redundant_gems(args = {})
       find_redundant_gems_with_gem(args)
       @count = 0
@@ -43,6 +84,18 @@ module Resquire
       find_redundant_gems(args).empty? ? false : @redundant_gems
     end
 
+
+    # Once we have figured out the redundant gems, we can easily check out
+    # our optimized gem list which we can now use.
+    #
+    # == Typical Usage
+    #
+    #  analyzer = Resquire::Analyzer.new(:gems => ['packetfu', 'pcaprub'])
+    #  analyzer.redundant_gems
+    #  # => ['pcaprub']
+    #  analyzer.optimized_gems
+    #  # => ['packetfu']
+    #   
     def optimized_gems
       optimized_gems = @gems.reject { |gem| @redundant_gems.include? gem }
       optimized_gems.empty? ? false : optimized_gems.uniq.sort
@@ -50,6 +103,7 @@ module Resquire
 
     private
 
+    # Used to find redundant gems.
     def find_redundant_gems(args = {})
       gems = @gems.reject { |gem| @redundant_gems.include? gem }
       permutation_count = permutations(gems)
@@ -67,6 +121,7 @@ module Resquire
       @redundant_gems
     end
 
+    # Help find redundant gems using the gem command.
     def find_redundant_gems_with_gem(args = {})
       gems = args[:gems] || @gems
       gems_with_deps = {}
@@ -89,6 +144,7 @@ module Resquire
       @redundant_gems
     end
 
+    # We can shuffle the permutations, which can make things faster.
     def shuffle_permutations(args = {})
       gems = @gems.reject { |gem| @redundant_gems.include? gem }
       permutation_count = permutations(gems)
@@ -105,6 +161,7 @@ module Resquire
       @redundant_gems
     end
 
+    # We can iterate over the permutations, which can make things faster.
     def iterate_permutations(args = {})
       gems = @gems.reject { |gem| @redundant_gems.include? gem }
       permutation_count = permutations(gems)
