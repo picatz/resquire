@@ -1,6 +1,6 @@
 require "resquire/version"
 require "resquire/banner"
-require "resquire/new_analyzer"
+require "resquire/analyzer"
 require "resquire/errors"
 require 'open3'
 
