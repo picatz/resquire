@@ -150,9 +150,10 @@ module Resquire
       permutation_count = permutations(gems)
       count = 0
       gems = gems.permutation.to_a.shuffle
+      template_location = File.dirname(Open3.capture2e("gem which resquire")[0]) + '/template.rb'
       gems.each do |gem_group|
         print "#{count}/#{permutation_count}\r" if @progress_bar
-        redundant_gem, status = Open3.capture2e("ruby ../../lib/template.rb #{gem_group.join(',')}")
+        redundant_gem, status = Open3.capture2e("ruby #{template_location} #{gem_group.join(',')}")
         @redundant_gems << redundant_gem unless status.success?
         break unless status.success?
         count += 1
@@ -166,9 +167,10 @@ module Resquire
       gems = @gems.reject { |gem| @redundant_gems.include? gem }
       permutation_count = permutations(gems)
       count = 0
+      template_location = File.dirname(Open3.capture2e("gem which resquire")[0]) + '/template.rb'
       gems.permutation.each do |gem_group|
         print "#{count}/#{permutation_count}\r" if @progress_bar
-        redundant_gem, status = Open3.capture2e("ruby ../../lib/template.rb #{gem_group.join(',')}")
+        redundant_gem, status = Open3.capture2e("ruby #{template_location} #{gem_group.join(',')}")
         @redundant_gems << redundant_gem unless status.success?
         break unless status.success?
         count += 1
